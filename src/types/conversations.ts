@@ -31,29 +31,29 @@ export type TParams = {
   back_pressure: number[];
 };
 
-type TextMessage = {
+export interface BaseMesage {
   id: string;
-  type: "text";
-  data: string; // the text
+  data: string;
   sender: TSenderEnum;
-};
+  created_at: Date;
+  updated_at: Date;
+  is_deleted: boolean;
+}
 
-type ImageMessage = {
-  id: string;
+export interface TextMessage extends BaseMesage {
+  type: "text";
+}
+
+export interface ImageMessage extends BaseMesage {
   type: "image";
-  data: string; // image URL
   image_description: string;
   image_utility: string;
-  sender: TSenderEnum;
-};
+}
 
-type ParameterMessage = {
-  id: string;
+export interface ParameterMessage extends BaseMesage {
   type: "parameter";
-  data: string; // parameter title
   fineTunning: TParams;
-  sender: TSenderEnum;
-};
+}
 
 export type TMessage = TextMessage | ImageMessage | ParameterMessage;
 

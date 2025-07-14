@@ -1,6 +1,6 @@
 import { v7 as uuid } from "uuid";
 
-import type { TConversation, TLinks } from "@/lib/conversations";
+import type { TConversation, TLinks } from "@/types/conversations";
 
 import { api } from ".";
 
@@ -25,11 +25,7 @@ export const fetchConversation = async ({
   conversationId,
 }: {
   conversationId: string;
-}): Promise<{
-  results: TConversation;
-  count: number;
-  links: TLinks;
-}> => {
+}): Promise<TConversation> => {
   const response = await api.get(`/zbot/conversations/${conversationId}/`);
   return response.data;
 };

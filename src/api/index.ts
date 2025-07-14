@@ -3,6 +3,7 @@ import axios from "axios";
 
 // VITE ENV VARS
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+export const MACHINE_TYPE_TO_FETCH = import.meta.env.VITE_MACHINE_TYPE_TO_FETCH;
 
 let isRefreshing = false;
 let failedQueue: any[] = [];

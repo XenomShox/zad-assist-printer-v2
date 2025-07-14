@@ -1,138 +1,125 @@
-// import { createContext, useContext, useEffect, useMemo, useState } from "react";
-// import { useDispatch, useSelector } from "react-redux";
-// import { useNavigate } from "react-router-dom";
-// import { toast } from "sonner";
+import type {
+  InfiniteData,
+  UseInfiniteQueryResult,
+  UseQueryResult,
+} from "@tanstack/react-query";
+import { createContext, useContext, useEffect } from "react";
+import { toast } from "sonner";
 
-// import {
-//   clear_errors,
-//   fetchMessagesV2,
-//   TConversation,
-//   TConversationType,
-//   TParams,
-// } from "@/store/conversationSlice";
-// import { AppDispatch, RootState } from "@/store/store";
+import { useConversation } from "@/hooks/conversations/use-conversations";
+import { useMessages } from "@/hooks/conversations/use-messages";
+import type {
+  TConversation,
+  TConversationType,
+  TLinks,
+  TMessage,
+} from "@/types/conversations";
 
-// export type TChatSize = "base" | "sm";
+export type TChatSize = "base" | "sm";
 
-// // Define the context type
-// interface ChatContextType {
-//   conversation: TConversation;
+// Define the context type
+interface ChatContextType {
+  conversation: UseQueryResult<TConversation, Error>;
 
-//   messagesLoading: boolean;
-//   messagesError: string | null;
+  messages: UseInfiniteQueryResult<
+    InfiniteData<
+      {
+        results: TMessage[];
+        count: number;
+        links: TLinks;
+      },
+      unknown
+    >,
+    Error
+  >;
 
-//   messagesLinkLoading: boolean;
-//   messagesLinkError: string | null;
+  redirectTo: string;
+  type: TConversationType;
+}
 
-//   isPendingAIResponse: { [conversationId: string]: boolean };
+// Create context
+const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
-//   selectedParam: TParams | null;
+type TChatProviderProps = {
+  conversationId: string;
+  redirectTo: string;
+  size?: TChatSize;
 
-//   redirectTo: string;
-//   type: TConversationType;
-// }
+  children: React.ReactNode;
+  type: TConversationType;
+};
 
-// // Create context
-// const ChatContext = createContext<ChatContextType | undefined>(undefined);
+// const groupMessages = (messages: TMessage[]): TMessage[][] => {
+//   if (messages.length === 0) return [];
 
-// type TChatProviderProps = {
-//   conversationId: string;
-//   redirectTo: string;
-//   size?: TChatSize;
+//   const result: TMessage[][] = [];
+//   let currentBlock: TMessage[] = [messages[0]];
 
-//   children: React.ReactNode;
-//   type: TConversationType;
-// };
-
-// // Provider component
-// export const ChatProvider = ({
-//   conversationId,
-//   redirectTo,
-
-//   children,
-//   type,
-// }: TChatProviderProps) => {
-//   const navigate = useNavigate();
-
-//   const dispatch = useDispatch<AppDispatch>();
-//   const {
-//     conversations,
-
-//     messagesLoading,
-//     messagesError,
-
-//     messagesLinkLoading,
-//     messagesLinkError,
-
-//     isPendingAIResponse,
-//   } = useSelector((state: RootState) => state.conversations);
-
-//   const conversation = useMemo(
-//     () => conversations.find((c) => c.id === conversationId),
-//     [conversations, conversationId],
-//   );
-
-//   const [selectedParam, setSelectedParam] = useState<TParams | null>(null);
-
-//   useEffect(() => {
-//     const fetchmessages = async () => {
-//       if (conversation?.id) {
-//         const resultAction = await dispatch(
-//           fetchMessagesV2({ conversationId: conversation.id }),
-//         );
-
-//         // failure
-//         if (fetchMessagesV2.rejected.match(resultAction)) navigate(redirectTo);
-//       }
-//     };
-//     fetchmessages();
-//   }, [navigate, dispatch, conversation?.id, redirectTo]);
-
-//   useEffect(() => {
-//     if (conversation?.params.length > 0)
-//       setSelectedParam(conversation?.params[0]);
-//     else setSelectedParam(null);
-//   }, [conversation?.params]);
-
-//   useEffect(() => {
-//     if (messagesError)
-//       toast.error("Uh oh! something went wrong.", {
-//         description: messagesError,
-//         onDismiss: () => dispatch(clear_errors()),
-//         onAutoClose: () => dispatch(clear_errors()),
-//       });
-//   }, [dispatch, messagesError]);
-
-//   return (
-//     <ChatContext.Provider
-//       value={{
-//         conversation,
-
-//         messagesLoading,
-//         messagesError,
-
-//         messagesLinkLoading,
-//         messagesLinkError,
-
-//         isPendingAIResponse,
-
-//         selectedParam,
-
-//         redirectTo,
-//         type,
-//       }}
-//     >
-//       {children}
-//     </ChatContext.Provider>
-//   );
-// };
-
-// // Custom hook for easy access
-// // eslint-disable-next-line react-refresh/only-export-components
-// export const useChatContext = () => {
-//   const context = useContext(ChatContext);
-//   if (!context) {
-//     throw new Error("useChatContext must be used within a ChatProvider");
+//   for (let i = 1; i < messages.length; i++) {
+//     if (messages[i].sender === messages[i - 1].sender) {
+//       currentBlock.push(messages[i]);
+//     } else {
+//       result.push(currentBlock);
+//       currentBlock = [messages[i]];
+//     }
 //   }
-//   return context;
+
+//   result.push(currentBlock);
+//   return result;
 // };
+
+// Provider component
+export const ChatProvider = ({
+  conversationId,
+  redirectTo,
+
+  children,
+  type,
+}: TChatProviderProps) => {
+  //   const navigate = useNavigate();
+
+  const conversation = useConversation(conversationId);
+
+  const messages = useMessages(conversationId);
+
+  //   const message_blocks = groupMessages(
+  //     messages.data?.pages.flatMap((page) => page.results) ?? [],
+  //   );
+
+  //   console.log(conversation.data, message_blocks);
+
+  useEffect(() => {
+    if (conversation.isError)
+      toast.error("Uh oh! something went wrong.", {
+        description: "Unable to retrieve conversation",
+      });
+    if (messages.isError)
+      toast.error("Uh oh! something went wrong.", {
+        description: "Unable to retrieve messages",
+      });
+  }, [conversation.isError, messages.isError]);
+
+  return (
+    <ChatContext.Provider
+      value={{
+        conversation,
+        messages,
+
+        redirectTo,
+        type,
+      }}
+    >
+      {children}
+    </ChatContext.Provider>
+  );
+};
+
+// Custom hook for easy access
+// eslint-disable-next-line react-refresh/only-export-components
+export const useChatContext = () => {
+  const context = useContext(ChatContext);
+  if (!context) {
+    throw new Error("useChatContext must be used within a ChatProvider");
+  }
+  return context;
+};

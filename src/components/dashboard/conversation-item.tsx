@@ -15,7 +15,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useDeleteConversation } from "@/hooks/conversations/use-conversations";
-import type { TConversation } from "@/lib/conversations";
+import type { TConversation } from "@/types/conversations";
 import { cn } from "@/lib/utils";
 
 interface ConversationItemProps {

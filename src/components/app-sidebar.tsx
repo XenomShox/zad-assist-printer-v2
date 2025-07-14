@@ -50,14 +50,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     ) {
       // Dispatch fetching for more messages
       fetchNextPage();
-
-      // if (fetchNextConversations.fulfilled.match(resultAction)) {
-      //   ReactGA.event({
-      // 	category: "conversation",
-      // 	action: "load more conversations",
-      // 	label: "loaded previous conversations",
-      //   });
-      // }
     }
   }, [conversations, isConversationLoading, fetchNextPage]);
 
@@ -70,7 +62,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenuButton onClick={handleCreateConversation}>
           <Plus />
-          <span>Create new chat</span>
+          <span>New chat</span>
         </SidebarMenuButton>
         <SearchForm className="group-data-[collapsible=icon]:hidden" />
       </SidebarHeader>

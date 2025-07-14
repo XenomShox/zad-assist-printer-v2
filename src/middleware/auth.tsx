@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import type { ReactElement } from "react";
 import { Navigate, Outlet } from "react-router";
 
 import PageFallback from "@/components/page-fallback";
