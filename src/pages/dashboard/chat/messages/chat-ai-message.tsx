@@ -30,16 +30,16 @@ const ChatAIMessage = ({ message, idx }: ChatAIMessageProps) => {
         <div
           className={cn(
             // "bg-accent text-accent w-2/3 rounded-3xl border-2 border-[rgb(237,237,237)] p-4",
-            "text-accent w-2/3 rounded-3xl p-4",
+            "prose dark:prose-invert w-2/3 max-w-2/3 rounded-3xl p-4",
             {
-              "bg-neutral-50": conversation.data?.type === "parameter",
+              "bg-neutral-50 text-sm": conversation.data?.type === "parameter",
             },
           )}
         >
           <Markdown
-            className={cn("prose dark:prose-invert max-w-full", {
-              "text-sm": conversation.data?.type === "parameter",
-            })}
+          // className={cn("max-w-full", {
+          //   "text-sm": conversation.data?.type === "parameter",
+          // })}
           >
             {message.data}
           </Markdown>
@@ -53,14 +53,17 @@ const ChatAIMessage = ({ message, idx }: ChatAIMessageProps) => {
           {message.image_utility && (
             <div
               className={cn(
-                "text-accent w-fit rounded-3xl border-2 border-neutral-200 bg-white p-4",
-                { "bg-neutral-50": conversation.data?.type === "parameter" },
+                "prose dark:prose-invert w-fit rounded-3xl border-2 border-neutral-200 bg-white p-4",
+                {
+                  "bg-neutral-50 text-sm":
+                    conversation.data?.type === "parameter",
+                },
               )}
             >
               <Markdown
-                className={cn("prose dark:prose-invert", {
-                  "text-sm": conversation.data?.type === "parameter",
-                })}
+              // className={cn("prose dark:prose-invert", {
+              //   "text-sm": conversation.data?.type === "parameter",
+              // })}
               >
                 {message.image_utility}
               </Markdown>

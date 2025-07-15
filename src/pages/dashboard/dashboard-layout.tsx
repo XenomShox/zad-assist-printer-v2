@@ -15,7 +15,7 @@ const DashboardLayout = ({
   redirectPath,
   conversationType,
 }: DashboardLayoutProps) => {
-  //   console.log({ redirectPath, conversationType });
+  console.log({ redirectPath, conversationType });
 
   useEffect(() => {
     document.title = "Dashboard";

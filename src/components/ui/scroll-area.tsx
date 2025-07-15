@@ -12,7 +12,7 @@ interface ScrollAreaProps
 }
 
 const ScrollArea = React.forwardRef<HTMLDivElement, ScrollAreaProps>(
-  ({ className, children, viewportRef, ...props }, ref) => {
+  ({ className, children, viewportRef, ...props }, _) => {
     return (
       <ScrollAreaPrimitive.Root
         data-slot="scroll-area"

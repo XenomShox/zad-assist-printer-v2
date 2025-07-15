@@ -2,8 +2,8 @@ import Markdown from "react-markdown";
 
 import UserAvatar from "@/components/user-avatar";
 import { useChatContext } from "@/context/ChatContext";
-import type { TMessage } from "@/types/conversations";
 import { cn } from "@/lib/utils";
+import type { TMessage } from "@/types/conversations";
 
 interface ChatUserMessageProps {
   message: TMessage;
@@ -25,13 +25,13 @@ const ChatUserMessage = ({ message, idx }: ChatUserMessageProps) => {
       {idx === 0 && <UserAvatar />}
 
       {message.type === "text" && (
-        <Markdown
+        <div
           className={cn("prose dark:prose-invert", {
             "text-sm": conversation.data?.type === "parameter",
           })}
         >
-          {message.data}
-        </Markdown>
+          <Markdown>{message.data}</Markdown>
+        </div>
       )}
 
       {/* {message.type === "parameter" && (
