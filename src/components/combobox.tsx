@@ -48,7 +48,7 @@ export function Combobox({ options, value, onChange }: ComboboxProps) {
         <Command>
           <CommandInput placeholder="Search machines..." className="h-9" />
           <CommandList className="scrollbar-light">
-            <CommandEmpty>No framework found.</CommandEmpty>
+            <CommandEmpty>No machines found.</CommandEmpty>
             <CommandGroup>
               {options.map((option) => (
                 <CommandItem
