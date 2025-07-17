@@ -1,8 +1,7 @@
 import { useNavigate, useParams } from "react-router";
 
+import ChatBody from "@/components/dashboard/chat/chat-body";
 import { ChatProvider } from "@/context/ChatContext";
-
-import ChatBody from "./chat-body";
 
 const Chat = () => {
   const navigate = useNavigate();
