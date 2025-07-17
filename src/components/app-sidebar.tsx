@@ -1,6 +1,7 @@
-import { Plus } from "lucide-react";
+import { ArrowUpRight, Plus } from "lucide-react";
 import * as React from "react";
 import { useCallback } from "react";
+import { Link } from "react-router";
 
 import { SearchForm } from "@/components/search-form";
 import {
@@ -63,6 +64,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenuButton onClick={handleCreateConversation}>
           <Plus />
           <span>New chat</span>
+        </SidebarMenuButton>
+        <SidebarMenuButton asChild className="group/link justify-between">
+          <Link to="/d/c">
+            <span>Chat system</span>
+            <ArrowUpRight className="text-black/0 transition-all group-hover/link:text-black/100" />
+          </Link>
+        </SidebarMenuButton>
+        <SidebarMenuButton asChild className="group/link justify-between">
+          <Link to="/d/c">
+            <span>Optimal parameter setting</span>
+            <ArrowUpRight className="text-black/0 transition-all group-hover/link:text-black/100" />
+          </Link>
         </SidebarMenuButton>
         <SearchForm className="group-data-[collapsible=icon]:hidden" />
       </SidebarHeader>
