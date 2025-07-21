@@ -1,4 +1,4 @@
-import { ArrowUpRight, Plus } from "lucide-react";
+import { MessageCircleMore, Plus, SlidersVertical } from "lucide-react";
 import * as React from "react";
 import { useCallback } from "react";
 import { Link } from "react-router";
@@ -65,16 +65,22 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <Plus />
           <span>New chat</span>
         </SidebarMenuButton>
-        <SidebarMenuButton asChild className="group/link justify-between">
+        <SidebarMenuButton
+          asChild
+          className="group/link flex-row-reverse justify-between"
+        >
           <Link to="/d/c">
+            <MessageCircleMore className="text-black/0 transition-all group-hover/link:text-black/100 group-data-[collapsible=icon]:text-black dark:text-white/0 group-hover/link:dark:text-white group-data-[collapsible=icon]:dark:text-white" />
             <span>Chat system</span>
-            <ArrowUpRight className="text-black/0 transition-all group-hover/link:text-black/100" />
           </Link>
         </SidebarMenuButton>
-        <SidebarMenuButton asChild className="group/link justify-between">
+        <SidebarMenuButton
+          asChild
+          className="group/link flex-row-reverse justify-between"
+        >
           <Link to="/d/c">
+            <SlidersVertical className="text-black/0 transition-all group-hover/link:text-black/100 group-data-[collapsible=icon]:text-black dark:text-white/0 group-hover/link:dark:text-white group-data-[collapsible=icon]:dark:text-white" />
             <span>Optimal parameter setting</span>
-            <ArrowUpRight className="text-black/0 transition-all group-hover/link:text-black/100" />
           </Link>
         </SidebarMenuButton>
         <SearchForm className="group-data-[collapsible=icon]:hidden" />
