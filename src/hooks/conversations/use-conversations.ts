@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router";
 
 import {
   createConversation,
@@ -29,6 +30,7 @@ export const useConversation = (conversationId: string | undefined) => {
 
 export const useCreateConversation = () => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   return useMutation({
     mutationFn: createConversation,
@@ -48,6 +50,7 @@ export const useCreateConversation = () => {
           ],
         };
       });
+      navigate(`/d/c/${newConversation.id}`);
     },
   });
 };

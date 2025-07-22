@@ -61,7 +61,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        <SidebarMenuButton onClick={handleCreateConversation}>
+        <SidebarMenuButton
+          className="cursor-pointer"
+          onClick={handleCreateConversation}
+        >
           <Plus />
           <span>New chat</span>
         </SidebarMenuButton>

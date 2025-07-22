@@ -47,7 +47,7 @@ export function Combobox({ options, value, onChange }: ComboboxProps) {
       <PopoverContent className="w-[200px] p-0">
         <Command>
           <CommandInput placeholder="Search machines..." className="h-9" />
-          <CommandList className="scrollbar-light">
+          <CommandList className="scrollbar">
             <CommandEmpty>No machines found.</CommandEmpty>
             <CommandGroup>
               {options.map((option) => (

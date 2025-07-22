@@ -170,7 +170,7 @@ body {
 
 @layer utilities {
   .scrollbar::-webkit-scrollbar {
-    width: 12px;
+    width: 8px;
     height: 20px;
   }
 
@@ -185,25 +185,4 @@ body {
     border: 3px solid inherit;
     margin-right: 20px;
   }
-
-  .scrollbar-light::-webkit-scrollbar {
-    width: 8px;
-    height: 20px;
-  }
-
-  .scrollbar-light::-webkit-scrollbar-track {
-    border-radius: 100vh;
-    background: transparent;
-  }
-
-  .scrollbar-light::-webkit-scrollbar-thumb {
-    background: var(--border);
-    border-radius: 100vh;
-    border: 3px solid inherit;
-    margin-right: 20px;
-  }
-
-  /* .scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #c0a0b9;
-  } */
 }

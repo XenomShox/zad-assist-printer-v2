@@ -120,7 +120,7 @@ const ChatForm = ({
             onKeyDown={handleKeyDown}
             placeholder="Please let us know how we can help!"
             rows={1}
-            className="scrollbar-light max-h-36 w-full resize-none bg-transparent p-1 outline-none placeholder:text-xs placeholder:sm:text-base"
+            className="scrollbar max-h-36 w-full resize-none bg-transparent p-1 outline-none placeholder:text-xs placeholder:sm:text-base"
           />
         </div>
 
