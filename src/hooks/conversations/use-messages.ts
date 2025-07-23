@@ -12,6 +12,7 @@ import {
   fetchChatHistory,
   receiveChatSystemStream,
 } from "@/api/messages";
+import { usePageContext } from "@/context/page-context";
 import type { TextMessage, TMessage } from "@/types/conversations";
 
 export const useMessages = (conversationId: string | undefined) => {
@@ -41,6 +42,7 @@ export const useSendMessage = (
   machine: string,
 ) => {
   const queryClient = useQueryClient();
+  const { setAiResponsePending } = usePageContext();
   const [responseLoading, setResponseLoading] = useState<boolean>(false);
 
   const addMessageToHistory = useCallback(
@@ -102,6 +104,7 @@ export const useSendMessage = (
     mutationFn: receiveChatSystemStream,
     onSuccess: (reader) => {
       setResponseLoading(true);
+      setAiResponsePending(true);
       const newMessage: TextMessage = {
         id: uuid(),
         data: "",
@@ -118,6 +121,7 @@ export const useSendMessage = (
 
         if (done) {
           setResponseLoading(false);
+          setAiResponsePending(false);
           return;
         }
 

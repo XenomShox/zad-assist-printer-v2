@@ -17,6 +17,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { usePageContext } from "@/context/page-context";
 import {
   useDeleteConversation,
   useEditConversation,
@@ -28,17 +29,25 @@ import { Input } from "../ui/input";
 
 interface ConversationItemProps {
   conversation: TConversation;
+  search: string;
 }
-const ConversationItem = ({ conversation }: ConversationItemProps) => {
+const ConversationItem = ({ conversation, search }: ConversationItemProps) => {
   const queryClient = useQueryClient();
+  const { aiResponsePending } = usePageContext();
   const [editing, setEditing] = useState<boolean>(false);
   const [title, setTitle] = useState<string>(conversation.title || "");
 
   const { isMobile } = useSidebar();
   const { conversationId } = useParams();
 
-  const { mutate: deleteChat } = useDeleteConversation();
-  const { mutate: editConversation } = useEditConversation();
+  const { mutate: deleteChat } = useDeleteConversation(
+    conversation.type,
+    search,
+  );
+  const { mutate: editConversation } = useEditConversation(
+    conversation.type,
+    search,
+  );
 
   const handleDeleteChat = async () => {
     await deleteChat(conversation.id);
@@ -84,9 +93,12 @@ const ConversationItem = ({ conversation }: ConversationItemProps) => {
     <SidebarMenuItem onMouseEnter={handlePrefetch}>
       <SidebarMenuButton
         asChild
-        className={cn({ "bg-muted": conversation.id === conversationId })}
+        className={cn({
+          "bg-muted": conversation.id === conversationId || aiResponsePending,
+        })}
+        disabled={aiResponsePending}
       >
-        <Link to={`/d/c/${conversation.id}`}>
+        <Link to={!aiResponsePending ? `/d/c/${conversation.id}` : "#"}>
           <span>{conversation.title}</span>
         </Link>
       </SidebarMenuButton>

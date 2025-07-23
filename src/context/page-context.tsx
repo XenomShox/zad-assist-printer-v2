@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useState } from "react";
 
 import type { TConversationType } from "@/types/conversations";
 
@@ -6,6 +6,9 @@ import type { TConversationType } from "@/types/conversations";
 interface PageContextType {
   redirectPath: string;
   conversationType: TConversationType;
+
+  aiResponsePending: boolean;
+  setAiResponsePending: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 // Create context
@@ -24,11 +27,15 @@ export const PageProvider = ({
   conversationType,
   children,
 }: PageProviderProps) => {
+  const [aiResponsePending, setAiResponsePending] = useState<boolean>(false);
   return (
     <PageContext.Provider
       value={{
         redirectPath,
         conversationType,
+
+        aiResponsePending,
+        setAiResponsePending,
       }}
     >
       {children}

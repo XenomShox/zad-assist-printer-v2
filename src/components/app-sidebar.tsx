@@ -29,6 +29,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { conversationType } = usePageContext();
 
   const [searchQuery, setSearchQuery] = useState<string>("");
+
   const [debouncedSearchTerm] = useDebounce(searchQuery, 300);
 
   //   console.log(conversations?.pages.flatMap((page) => page.results) ?? []);
@@ -41,16 +42,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     fetchNextPage,
   } = useConversations(conversationType, debouncedSearchTerm);
 
-  const {
-    mutate: createConversation,
-    isPending: isCreateConversationPending,
-    // isError: isCreateConversationError,
-  } = useCreateConversation();
-
   const handleCreateConversation = () => {
     if (isCreateConversationPending) return;
     createConversation({ title: "New Conversation", type: "base" });
   };
+
+  const {
+    mutate: createConversation,
+    isPending: isCreateConversationPending,
+    // isError: isCreateConversationError,
+  } = useCreateConversation(conversationType, debouncedSearchTerm);
 
   const handleBottomScroll = useCallback(async () => {
     if (
@@ -122,6 +123,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <ConversationItem
                   key={conversation.id}
                   conversation={conversation}
+                  search={debouncedSearchTerm}
                 />
               ))}
             </SidebarMenu>

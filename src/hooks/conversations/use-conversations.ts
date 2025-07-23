@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
@@ -36,7 +35,10 @@ export const useConversation = (conversationId: string | undefined) => {
   });
 };
 
-export const useCreateConversation = () => {
+export const useCreateConversation = (
+  type: TConversationType,
+  search: string,
+) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
@@ -44,20 +46,27 @@ export const useCreateConversation = () => {
     mutationFn: createConversation,
     onSuccess: (newConversation) => {
       // Get current pages from the infinite query
-      queryClient.setQueryData(["conversations"], (oldData: any) => {
-        if (!oldData) return oldData;
+      // queryClient.setQueryData(["conversations"], (oldData: any) => {
+      //   if (!oldData) return oldData;
 
-        return {
-          ...oldData,
-          pages: [
-            {
-              ...oldData.pages[0],
-              results: [newConversation, ...oldData.pages[0].results],
-            },
-            ...oldData.pages.slice(1),
-          ],
-        };
+      //   return {
+      //     ...oldData,
+      //     pages: [
+      //       {
+      //         ...oldData.pages[0],
+      //         results: [newConversation, ...oldData.pages[0].results],
+      //       },
+      //       ...oldData.pages.slice(1),
+      //     ],
+      //   };
+      // });
+
+      queryClient.invalidateQueries({
+        queryKey: ["conversations", type, search],
       });
+      // toast.success("Title edited", {
+      //   description: "Title has succesfuly been edited",
+      // });
       navigate(`/d/c/${newConversation.id}`);
     },
     onError: () => {
@@ -68,7 +77,10 @@ export const useCreateConversation = () => {
   });
 };
 
-export const useEditConversation = () => {
+export const useEditConversation = (
+  type: TConversationType,
+  search: string,
+) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -85,7 +97,9 @@ export const useEditConversation = () => {
     }) => editConversation(conversationId, newTitle, newName, newType),
     onSuccess: () => {
       // Optimistically remove from cached conversations
-      queryClient.invalidateQueries({ queryKey: ["conversations"] });
+      queryClient.invalidateQueries({
+        queryKey: ["conversations", type, search],
+      });
       toast.success("Title edited", {
         description: "Title has succesfuly been edited",
       });
@@ -97,25 +111,34 @@ export const useEditConversation = () => {
     },
   });
 };
-export const useDeleteConversation = () => {
+export const useDeleteConversation = (
+  type: TConversationType,
+  search: string,
+) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (conversationId: string) => deleteConversation(conversationId),
-    onSuccess: (_, conversationId) => {
+    onSuccess: () => {
       // Optimistically remove from cached conversations
-      queryClient.setQueryData(["conversations"], (oldData: any) => {
-        if (!oldData) return oldData;
+      // queryClient.setQueryData(["conversations"], (oldData: any) => {
+      //   if (!oldData) return oldData;
 
-        return {
-          ...oldData,
-          pages: oldData.pages.map((page: any) => ({
-            ...page,
-            results: page.results.filter(
-              (convo: any) => convo.id !== conversationId,
-            ),
-          })),
-        };
+      //   return {
+      //     ...oldData,
+      //     pages: oldData.pages.map((page: any) => ({
+      //       ...page,
+      //       results: page.results.filter(
+      //         (convo: any) => convo.id !== conversationId,
+      //       ),
+      //     })),
+      //   };
+      // });
+      queryClient.invalidateQueries({
+        queryKey: ["conversations", type, search],
+      });
+      toast.success("Title edited", {
+        description: "Title has succesfuly been edited",
       });
     },
     onError: () => {
