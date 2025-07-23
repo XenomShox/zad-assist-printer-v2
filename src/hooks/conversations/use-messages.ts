@@ -24,6 +24,7 @@ export const useMessages = (conversationId: string | undefined) => {
     getPreviousPageParam: (lastPage) => lastPage.links.previous,
 
     enabled: !!conversationId,
+    refetchOnWindowFocus: false,
   });
 
   return messageHistory;

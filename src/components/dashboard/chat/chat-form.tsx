@@ -82,19 +82,16 @@ const ChatForm = ({
   const handleSubmit = async () => {
     if (isFormDisabled) return;
 
-    console.log({
+    const textTemp = text;
+
+    sendMessage({
       conversationId: conversation.data!.id,
-      text,
+      text: textTemp,
       sender: "user",
       machine,
     });
 
-    await sendMessage({
-      conversationId: conversation.data!.id,
-      text,
-      sender: "user",
-      machine,
-    });
+    setText("");
   };
 
   return (
