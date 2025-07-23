@@ -76,8 +76,6 @@ export const useSendMessage = (
             ...oldData.pages[0].results[oldData.pages[0].results.length - 1],
           };
 
-          console.log(oldData);
-
           lastMessage.id = id;
           lastMessage.data = `${lastMessage.data}${data}`;
 

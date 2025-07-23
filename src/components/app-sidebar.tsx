@@ -66,8 +66,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     onBottom: handleBottomScroll,
   });
 
-  console.log(conversations?.length);
-
   return (
     <Sidebar {...props}>
       <SidebarHeader>
