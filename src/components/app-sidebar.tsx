@@ -1,19 +1,21 @@
-import { MessageCircleMore, Plus, SlidersVertical } from "lucide-react";
-import * as React from "react";
-import { useCallback } from "react";
+import { MessageCircleMore, Plus, Search, SlidersVertical } from "lucide-react";
+import { useCallback, useState } from "react";
 import { Link } from "react-router";
+import { useDebounce } from "use-debounce";
 
-import { SearchForm } from "@/components/search-form";
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
+  SidebarGroupContent,
   SidebarGroupLabel,
   SidebarHeader,
+  SidebarInput,
   SidebarMenu,
   SidebarMenuButton,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { usePageContext } from "@/context/page-context";
 import {
   useConversations,
   useCreateConversation,
@@ -21,23 +23,29 @@ import {
 import useScrollDetection from "@/hooks/use-scroll-detection";
 
 import ConversationItem from "./dashboard/conversation-item";
+import { Label } from "./ui/label";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { conversationType } = usePageContext();
+
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [debouncedSearchTerm] = useDebounce(searchQuery, 300);
+
+  //   console.log(conversations?.pages.flatMap((page) => page.results) ?? []);
+
   const {
     data: conversations,
     isLoading: isConversationLoading,
     isError: isConversationError,
 
     fetchNextPage,
-  } = useConversations("base");
+  } = useConversations(conversationType, debouncedSearchTerm);
 
   const {
     mutate: createConversation,
     isPending: isCreateConversationPending,
     // isError: isCreateConversationError,
   } = useCreateConversation();
-
-  //   console.log(conversations?.pages.flatMap((page) => page.results) ?? []);
 
   const handleCreateConversation = () => {
     if (isCreateConversationPending) return;
@@ -46,17 +54,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const handleBottomScroll = useCallback(async () => {
     if (
-      !isConversationLoading &&
-      conversations?.pages[conversations.pages.length - 1].links.next
+      !isConversationLoading
+      // && conversations?.pages[conversations.pages.length - 1].links.next
     ) {
       // Dispatch fetching for more messages
       fetchNextPage();
     }
-  }, [conversations, isConversationLoading, fetchNextPage]);
+  }, [isConversationLoading, fetchNextPage]);
 
   const SidebarContentRef = useScrollDetection({
     onBottom: handleBottomScroll,
   });
+
+  console.log(conversations?.length);
 
   return (
     <Sidebar {...props}>
@@ -68,6 +78,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <Plus />
           <span>New chat</span>
         </SidebarMenuButton>
+
         <SidebarMenuButton
           asChild
           className="group/link flex-row-reverse justify-between"
@@ -86,21 +97,35 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <span>Optimal parameter setting</span>
           </Link>
         </SidebarMenuButton>
-        <SearchForm className="group-data-[collapsible=icon]:hidden" />
+
+        {/* <SearchForm className="group-data-[collapsible=icon]:hidden" /> */}
+        <SidebarGroup className="py-0 group-data-[collapsible=icon]:hidden">
+          <SidebarGroupContent className="relative">
+            <Label htmlFor="search" className="sr-only">
+              Search
+            </Label>
+            <SidebarInput
+              id="search"
+              placeholder="Search the docs..."
+              className="pl-8"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <Search className="pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 opacity-50 select-none" />
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarHeader>
       <SidebarContent ref={SidebarContentRef} className="scrollbar">
         {!isConversationLoading && !isConversationError && (
           <SidebarGroup className="group-data-[collapsible=icon]:hidden">
             <SidebarGroupLabel>Chat</SidebarGroupLabel>
             <SidebarMenu>
-              {(conversations?.pages.flatMap((page) => page.results) ?? []).map(
-                (converstaion) => (
-                  <ConversationItem
-                    key={converstaion.id}
-                    converstaion={converstaion}
-                  />
-                ),
-              )}
+              {conversations?.map((conversation) => (
+                <ConversationItem
+                  key={conversation.id}
+                  conversation={conversation}
+                />
+              ))}
             </SidebarMenu>
           </SidebarGroup>
         )}

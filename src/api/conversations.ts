@@ -1,14 +1,20 @@
 import { v7 as uuid } from "uuid";
 
-import type { TConversation, TLinks } from "@/types/conversations";
+import type {
+  TConversation,
+  TConversationType,
+  TLinks,
+} from "@/types/conversations";
 
 import { api } from ".";
 
 export const fetchConversations = async ({
   type,
+  search,
   pageParam,
 }: {
-  type: "base" | "parameter";
+  type: TConversationType;
+  search: string;
   pageParam: string;
 }): Promise<{
   results: TConversation[];
@@ -16,7 +22,7 @@ export const fetchConversations = async ({
   links: TLinks;
 }> => {
   const response = await api.get(pageParam, {
-    params: { limit: 30, is_deleted: false, type },
+    params: { limit: 30, is_deleted: false, type, title__contains: search },
   });
   return response.data;
 };
@@ -38,9 +44,21 @@ export const createConversation = async (payload: Partial<TConversation>) => {
   return response.data as TConversation;
 };
 
+export const editConversation = async (
+  conversationId: string,
+  title: string,
+  name: string,
+  type: TConversationType,
+) => {
+  const res = await api.put(`/zbot/conversations/${conversationId}/`, {
+    type,
+    name,
+    title,
+  });
+  return res.data;
+};
+
 export const deleteConversation = async (conversationId: string) => {
   const res = await api.delete(`/zbot/conversations/${conversationId}/`);
-
-  console.log(res.data);
   return res.data;
 };

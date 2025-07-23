@@ -1,7 +1,7 @@
 import Markdown from "react-markdown";
 
-import UserAvatar from "@/components/user-avatar";
-import { useChatContext } from "@/context/ChatContext";
+// import UserAvatar from "@/components/user-avatar";
+import { useChatContext } from "@/context/chat-context";
 import { cn } from "@/lib/utils";
 import type { TMessage } from "@/types/conversations";
 
@@ -9,7 +9,7 @@ interface ChatUserMessageProps {
   message: TMessage;
   idx: number;
 }
-const ChatUserMessage = ({ message, idx }: ChatUserMessageProps) => {
+const ChatUserMessage = ({ message }: ChatUserMessageProps) => {
   const { conversation } = useChatContext();
   return (
     <div
@@ -22,7 +22,7 @@ const ChatUserMessage = ({ message, idx }: ChatUserMessageProps) => {
         },
       )}
     >
-      {idx === 0 && <UserAvatar />}
+      {/* {idx === 0 && <UserAvatar />} */}
 
       {message.type === "text" && (
         <div
@@ -40,7 +40,7 @@ const ChatUserMessage = ({ message, idx }: ChatUserMessageProps) => {
 
       {message.type === "image" && (
         <img
-          className="max-h-72 rounded-xl"
+          className="max-h-72 rounded-lg"
           src={message.data}
           alt={`${message.id}`}
         />

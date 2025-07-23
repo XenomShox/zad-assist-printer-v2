@@ -1,6 +1,9 @@
-import { Forward, MoreHorizontal, SquarePen, Trash2 } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { MoreHorizontal, SquarePen, Trash2 } from "lucide-react";
+import { useState } from "react";
 import { Link, useParams } from "react-router";
 
+import { fetchChatHistory } from "@/api/messages";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,31 +17,77 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useDeleteConversation } from "@/hooks/conversations/use-conversations";
+import {
+  useDeleteConversation,
+  useEditConversation,
+} from "@/hooks/conversations/use-conversations";
 import { cn } from "@/lib/utils";
 import type { TConversation } from "@/types/conversations";
 
+import { Input } from "../ui/input";
+
 interface ConversationItemProps {
-  converstaion: TConversation;
+  conversation: TConversation;
 }
-const ConversationItem = ({ converstaion }: ConversationItemProps) => {
+const ConversationItem = ({ conversation }: ConversationItemProps) => {
+  const queryClient = useQueryClient();
+  const [editing, setEditing] = useState<boolean>(false);
+  const [title, setTitle] = useState<string>(conversation.title || "");
+
   const { isMobile } = useSidebar();
   const { conversationId } = useParams();
 
   const { mutate: deleteChat } = useDeleteConversation();
+  const { mutate: editConversation } = useEditConversation();
 
-  const handleEditChat = () => {};
-  const handleDeleteChat = () => {
-    deleteChat(converstaion.id);
+  const handleDeleteChat = async () => {
+    await deleteChat(conversation.id);
   };
+
+  const handlePrefetch = async () => {
+    // console.log("Prefetching", conversation.id);
+
+    await queryClient.prefetchInfiniteQuery({
+      queryKey: ["messages", conversation.id],
+      queryFn: ({ pageParam }) => fetchChatHistory({ pageParam }),
+      initialPageParam: `/zbot/conversations/${conversation.id}/history/?limit=10&start=0`,
+
+      staleTime: 60000,
+    });
+  };
+
+  const handleEditChat = () => setEditing(true);
+  const editTitle = async () => {
+    await editConversation({
+      conversationId: conversation.id,
+      newTitle: title,
+      newName: conversation.name,
+      newType: conversation.type,
+    });
+    setEditing(false);
+  };
+
+  if (editing)
+    return (
+      <SidebarMenuItem>
+        <Input
+          placeholder="Edit the title ..."
+          autoFocus
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          onBlur={editTitle}
+        />
+      </SidebarMenuItem>
+    );
+
   return (
-    <SidebarMenuItem>
+    <SidebarMenuItem onMouseEnter={handlePrefetch}>
       <SidebarMenuButton
         asChild
-        className={cn({ "bg-muted": converstaion.id === conversationId })}
+        className={cn({ "bg-muted": conversation.id === conversationId })}
       >
-        <Link to={`/d/c/${converstaion.id}`}>
-          <span>{converstaion.title}</span>
+        <Link to={`/d/c/${conversation.id}`}>
+          <span>{conversation.title}</span>
         </Link>
       </SidebarMenuButton>
       <DropdownMenu>
@@ -57,10 +106,10 @@ const ConversationItem = ({ converstaion }: ConversationItemProps) => {
             <SquarePen className="text-muted-foreground" />
             <span>Edit chat</span>
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          {/* <DropdownMenuItem>
             <Forward className="text-muted-foreground" />
             <span>Share Project</span>
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={handleDeleteChat}>
             <Trash2 className="text-muted-foreground" />

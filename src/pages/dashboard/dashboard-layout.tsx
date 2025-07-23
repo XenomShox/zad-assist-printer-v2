@@ -5,35 +5,40 @@ import { AppSidebar } from "@/components/app-sidebar";
 import DashboardHeader from "@/components/dashboard/header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { MachineProvider } from "@/context/machine";
+import { PageProvider } from "@/context/page-context";
+import type { TConversationType } from "@/types/conversations";
 
 interface DashboardLayoutProps {
   redirectPath: string;
-  conversationType: "base" | "parameter";
+  conversationType: TConversationType;
 }
 
 const DashboardLayout = ({
   redirectPath,
   conversationType,
 }: DashboardLayoutProps) => {
-  console.log({ redirectPath, conversationType });
-
   useEffect(() => {
     document.title = "Dashboard";
   }, []);
 
   return (
-    <SidebarProvider>
-      <AppSidebar collapsible="icon" />
-      <SidebarInset>
-        <MachineProvider>
-          <DashboardHeader />
+    <PageProvider
+      redirectPath={redirectPath}
+      conversationType={conversationType}
+    >
+      <SidebarProvider>
+        <AppSidebar collapsible="icon" />
+        <SidebarInset>
+          <MachineProvider>
+            <DashboardHeader />
 
-          <div className="flex flex-1 flex-col gap-4">
-            <Outlet />
-          </div>
-        </MachineProvider>
-      </SidebarInset>
-    </SidebarProvider>
+            <div className="flex flex-1 flex-col gap-4">
+              <Outlet />
+            </div>
+          </MachineProvider>
+        </SidebarInset>
+      </SidebarProvider>
+    </PageProvider>
   );
 };
 

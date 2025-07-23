@@ -1,8 +1,8 @@
 import Markdown from "react-markdown";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
-import { useChatContext } from "@/context/ChatContext";
+// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+// import { Separator } from "@/components/ui/separator";
+import { useChatContext } from "@/context/chat-context";
 import { cn } from "@/lib/utils";
 import type { TMessage } from "@/types/conversations";
 
@@ -12,11 +12,11 @@ interface ChatAIMessageProps {
   message: TMessage;
   idx: number;
 }
-const ChatAIMessage = ({ message, idx }: ChatAIMessageProps) => {
+const ChatAIMessage = ({ message }: ChatAIMessageProps) => {
   const { conversation } = useChatContext();
   return (
     <div className={cn("flex w-full flex-col gap-8 self-start rounded-3xl")}>
-      {idx === 0 && (
+      {/* {idx === 0 && (
         <div className={cn("flex flex-col gap-6")}>
           <Avatar>
             <AvatarImage src="/chat/zbot-logo.svg" alt="ai avatar" />
@@ -24,7 +24,7 @@ const ChatAIMessage = ({ message, idx }: ChatAIMessageProps) => {
           </Avatar>
           <Separator className="bg-accent h-[2px]" />
         </div>
-      )}
+      )} */}
 
       {message.type == "text" && (
         <div

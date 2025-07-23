@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useChatContext } from "@/context/ChatContext";
+import { useChatContext } from "@/context/chat-context";
 import useScrollDetection from "@/hooks/use-scroll-detection";
 import type { TMessage } from "@/types/conversations";
 
@@ -124,7 +124,7 @@ const ChatBody = () => {
       if (currentContainer)
         currentContainer.removeEventListener("scroll", updateScrollDistance);
     };
-  }, [chatBodyRef, showScrollToBottom]);
+  }, [chatBodyRef, showScrollToBottom, conversation.data?.id]);
 
   //   console.log(conversation.data);
   //   console.log(messages.data);

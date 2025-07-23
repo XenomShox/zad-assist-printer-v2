@@ -7,7 +7,7 @@ import type {
   TSenderEnum,
 } from "@/types/conversations";
 
-import { api } from ".";
+import { api, API_BASE_URL, APP_VERSION } from ".";
 
 export const fetchChatHistory = async ({
   pageParam,
@@ -70,4 +70,45 @@ export const createTextMessage = async ({
   const new_message: TextMessage = { ...rest, type: "text", data: textData };
 
   return new_message;
+};
+
+interface receiveChatSystemStreamProps {
+  conversationId: string;
+  textQuery: { id: string; text: string };
+  imageQuery?: { id: string; image_url: string };
+  machineType: string;
+}
+
+export const receiveChatSystemStream = async ({
+  conversationId,
+  textQuery,
+  imageQuery,
+  machineType,
+}: receiveChatSystemStreamProps) => {
+  const body = {
+    textQuery,
+    machineType,
+    appVersion: APP_VERSION,
+    imageQuery,
+  };
+
+  const token = localStorage.getItem("zad-assist-jwt-access");
+
+  const response = await fetch(
+    `${API_BASE_URL}/zbot/conversations/${conversationId}/streamsse/`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `JWT ${token}`,
+      },
+      body: JSON.stringify(body),
+    },
+  );
+
+  if (!response.body) throw new Error("Stream not supported by browser");
+
+  const reader = response.body.getReader();
+
+  return reader;
 };

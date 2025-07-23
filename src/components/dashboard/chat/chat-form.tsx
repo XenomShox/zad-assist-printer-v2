@@ -1,9 +1,10 @@
 import { ArrowUp } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import { useChatContext } from "@/context/ChatContext";
+import { LoadingSpinner } from "@/components/loading-spinner";
+import { useChatContext } from "@/context/chat-context";
 import { useMachineContext } from "@/context/machine";
-import { useCreateTextMessage } from "@/hooks/conversations/use-messages";
+import { useSendMessage } from "@/hooks/conversations/use-messages";
 import { cn } from "@/lib/utils";
 
 import ImagePicker from "./chat-image-picker";
@@ -21,14 +22,21 @@ const ChatForm = ({
 }: ChatFormProps) => {
   const { conversation, type } = useChatContext();
   const { machine } = useMachineContext();
-  const { mutate: createTextMessage, isPending: isCreateTextMessagePending } =
-    useCreateTextMessage(conversation.data?.id);
+  const {
+    send_mutation: { mutate: sendMessage, isPending: isSendingMessage },
+    // stream_mutation: {
+    //   mutate: streamResponse,
+    // },
+    responseLoading,
+  } = useSendMessage(conversation.data?.id, machine);
+
+  // console.log(responseLoading);
 
   const [text, setText] = useState<string>("");
   const [, setImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  const isFormDisabled = !text || isCreateTextMessagePending;
+  const isFormDisabled = !text || isSendingMessage || responseLoading;
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -71,7 +79,7 @@ const ChatForm = ({
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (isFormDisabled) return;
 
     console.log({
@@ -80,7 +88,8 @@ const ChatForm = ({
       sender: "user",
       machine,
     });
-    createTextMessage({
+
+    await sendMessage({
       conversationId: conversation.data!.id,
       text,
       sender: "user",
@@ -100,7 +109,7 @@ const ChatForm = ({
 
       {/* The form itself */}
       <form
-        className="bg-accent left-1/2 flex min-h-24 w-[48rem] flex-col justify-between gap-2 rounded-lg p-2 2xl:gap-4"
+        className="bg-accent left-1/2 flex min-h-24 w-[48rem] flex-col justify-between gap-2 rounded-xl p-2 2xl:gap-4"
         onSubmit={(e) => {
           e.preventDefault();
           if (!isFormDisabled) handleSubmit();
@@ -148,7 +157,7 @@ const ChatForm = ({
           </div>
 
           <button
-            //   disabled={isFormDisabled}
+            disabled={isFormDisabled}
             type="submit"
             aria-label="send message button"
             className={cn(
@@ -159,19 +168,19 @@ const ChatForm = ({
               },
             )}
           >
-            {/* {isPendingAIResponse[conversation?.id] && <LoadingSpinner />}
-          {!isPendingAIResponse[conversation?.id] && (
-            <ArrowUp
+            {responseLoading && <LoadingSpinner />}
+            {!responseLoading && (
+              <ArrowUp
+                size={type === "base" ? 28 : 24}
+                strokeWidth={2}
+                className="text-white"
+              />
+            )}
+            {/* <ArrowUp
               size={type === "base" ? 28 : 24}
               strokeWidth={2}
               className="text-white"
-            />
-          )} */}
-            <ArrowUp
-              size={type === "base" ? 28 : 24}
-              strokeWidth={2}
-              className="text-white"
-            />
+            /> */}
           </button>
         </div>
       </form>

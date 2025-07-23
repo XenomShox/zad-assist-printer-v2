@@ -3,7 +3,7 @@ import { Plus } from "lucide-react";
 // import ReactGA from "react-ga4";
 import { toast } from "sonner";
 
-import { useChatContext } from "@/context/ChatContext";
+import { useChatContext } from "@/context/chat-context";
 import { cn } from "@/lib/utils";
 
 type TImagePickerProps = {
