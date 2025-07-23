@@ -95,6 +95,7 @@ const ConversationItem = ({ conversation, search }: ConversationItemProps) => {
         asChild
         className={cn({
           "bg-muted": conversation.id === conversationId || aiResponsePending,
+          "cursor-default": aiResponsePending,
         })}
         disabled={aiResponsePending}
       >

@@ -8,9 +8,9 @@ import { useCallback, useState } from "react";
 import { v7 as uuid } from "uuid";
 
 import {
-  createTextMessage,
   fetchChatHistory,
   receiveChatSystemStream,
+  sendMessages,
 } from "@/api/messages";
 import { usePageContext } from "@/context/page-context";
 import type { TextMessage, TMessage } from "@/types/conversations";
@@ -148,15 +148,20 @@ export const useSendMessage = (
   });
 
   const send_mutation = useMutation({
-    mutationFn: createTextMessage,
-    onSuccess: (newMessage) => {
+    mutationFn: sendMessages,
+    onSuccess: (newMessages) => {
       // add message to history
-      addMessageToHistory(newMessage);
+      const { new_text_message, new_image_message } = newMessages;
+      if (new_image_message) addMessageToHistory(new_image_message);
+      addMessageToHistory(new_text_message);
 
       if (conversationId)
         stream_mutation.mutate({
           conversationId,
-          textQuery: { id: newMessage.id, text: newMessage.data },
+          textQuery: { id: new_text_message.id, text: new_text_message.data },
+          imageQuery: new_image_message
+            ? { id: new_image_message.id, image_url: new_image_message.data }
+            : undefined,
           machineType: machine,
         });
     },

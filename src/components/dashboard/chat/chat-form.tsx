@@ -33,7 +33,7 @@ const ChatForm = ({
   // console.log(responseLoading);
 
   const [text, setText] = useState<string>("");
-  const [, setImage] = useState<File | null>(null);
+  const [image, setImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const isFormDisabled = !text || isSendingMessage || responseLoading;
@@ -74,7 +74,7 @@ const ChatForm = ({
       if (e.shiftKey) {
         setText((prev) => prev + "\n");
       } else {
-        // if (!isFormDisabled) handleSubmit();
+        if (!isFormDisabled) handleSubmit();
       }
     }
   };
@@ -87,11 +87,13 @@ const ChatForm = ({
     sendMessage({
       conversationId: conversation.data!.id,
       text: textTemp,
+      image: image || undefined,
       sender: "user",
       machine,
     });
 
     setText("");
+    handleClearImage();
   };
 
   return (

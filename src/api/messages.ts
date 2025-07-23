@@ -1,6 +1,7 @@
 // import { v7 as uuid } from "uuid";
 
 import type {
+  ImageMessage,
   TextMessage,
   TLinks,
   TMessage,
@@ -46,17 +47,45 @@ export const fetchChatHistory = async ({
 interface createTextMessageProps {
   conversationId: string;
   text: string;
+  image?: File;
   sender?: TSenderEnum;
   machine: string;
 }
 
-export const createTextMessage = async ({
+export const sendMessages = async ({
   conversationId,
   text,
+  image,
   sender = "user",
   machine,
-}: createTextMessageProps): Promise<TMessage> => {
-  const response = await api.post(
+}: createTextMessageProps): Promise<{
+  new_text_message: TMessage;
+  new_image_message: TMessage | undefined;
+}> => {
+  let new_image_message: ImageMessage | undefined = undefined;
+
+  if (image) {
+    const formData = new FormData();
+    formData.append("metadata", "");
+    formData.append("image", image);
+    formData.append("machine_model", machine);
+    formData.append("sender", sender);
+
+    const response = await api.post(
+      `/zbot/conversations/${conversationId}/imageMessages/`,
+      formData,
+    );
+
+    const { image_url: imageData, ...imageRest } = response.data;
+
+    new_image_message = {
+      ...imageRest,
+      type: "image",
+      data: imageData,
+    };
+  }
+
+  const text_msg_response = await api.post(
     `/zbot/conversations/${conversationId}/textMessages/`,
     {
       text: text.trim(),
@@ -65,11 +94,15 @@ export const createTextMessage = async ({
     },
   );
 
-  const { text: textData, ...rest } = response.data;
+  const { text: textData, ...textRest } = text_msg_response.data;
 
-  const new_message: TextMessage = { ...rest, type: "text", data: textData };
+  const new_text_message: TextMessage = {
+    ...textRest,
+    type: "text",
+    data: textData,
+  };
 
-  return new_message;
+  return { new_text_message, new_image_message };
 };
 
 interface receiveChatSystemStreamProps {
