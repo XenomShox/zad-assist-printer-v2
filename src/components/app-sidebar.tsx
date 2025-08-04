@@ -1,4 +1,8 @@
-import { MessageCircleMore, Plus, Search, SlidersVertical } from "lucide-react";
+import {
+  MessageCircleMore,
+  Plus,
+  Search /* SlidersVertical */,
+} from "lucide-react";
 import { useCallback, useState } from "react";
 import { Link } from "react-router";
 import { useDebounce } from "use-debounce";
@@ -13,7 +17,7 @@ import {
   SidebarInput,
   SidebarMenu,
   SidebarMenuButton,
-  SidebarRail,
+  // SidebarRail,
 } from "@/components/ui/sidebar";
 import { usePageContext } from "@/context/page-context";
 import {
@@ -27,12 +31,8 @@ import { Label } from "./ui/label";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { conversationType } = usePageContext();
-
   const [searchQuery, setSearchQuery] = useState<string>("");
-
   const [debouncedSearchTerm] = useDebounce(searchQuery, 300);
-
-  //   console.log(conversations?.pages.flatMap((page) => page.results) ?? []);
 
   const {
     data: conversations,
@@ -47,20 +47,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     createConversation({ title: "New Conversation", type: "base" });
   };
 
-  const {
-    mutate: createConversation,
-    isPending: isCreateConversationPending,
-    // isError: isCreateConversationError,
-  } = useCreateConversation(conversationType, debouncedSearchTerm);
+  const { mutate: createConversation, isPending: isCreateConversationPending } =
+    useCreateConversation(conversationType, debouncedSearchTerm);
 
   const handleBottomScroll = useCallback(async () => {
-    if (
-      !isConversationLoading
-      // && conversations?.pages[conversations.pages.length - 1].links.next
-    ) {
-      // Dispatch fetching for more messages
-      fetchNextPage();
-    }
+    if (!isConversationLoading) fetchNextPage();
   }, [isConversationLoading, fetchNextPage]);
 
   const SidebarContentRef = useScrollDetection({
@@ -87,15 +78,24 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <span>Chat system</span>
           </Link>
         </SidebarMenuButton>
-        <SidebarMenuButton
+        {/* <SidebarMenuButton
           asChild
           className="group/link flex-row-reverse justify-between"
         >
-          <Link to="/d/c">
+          <Link to="/d/m">
             <SlidersVertical className="text-black/0 transition-all group-hover/link:text-black/100 group-data-[collapsible=icon]:text-black dark:text-white/0 group-hover/link:dark:text-white group-data-[collapsible=icon]:dark:text-white" />
             <span>Optimal parameter setting</span>
           </Link>
         </SidebarMenuButton>
+        <SidebarMenuButton
+          asChild
+          className="group/link flex-row-reverse justify-between"
+        >
+          <Link to="/d/ss">
+            <SlidersVertical className="text-black/0 transition-all group-hover/link:text-black/100 group-data-[collapsible=icon]:text-black dark:text-white/0 group-hover/link:dark:text-white group-data-[collapsible=icon]:dark:text-white" />
+            <span>Similarity search</span>
+          </Link>
+        </SidebarMenuButton> */}
 
         {/* <SearchForm className="group-data-[collapsible=icon]:hidden" /> */}
         <SidebarGroup className="py-0 group-data-[collapsible=icon]:hidden">
@@ -130,7 +130,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroup>
         )}
       </SidebarContent>
-      <SidebarRail />
+      {/* <SidebarRail /> */}
     </Sidebar>
   );
 }

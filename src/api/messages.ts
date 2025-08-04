@@ -68,7 +68,7 @@ export const sendMessages = async ({
     const formData = new FormData();
     formData.append("metadata", "");
     formData.append("image", image);
-    formData.append("machine_model", machine);
+    formData.append("machine_id", machine);
     formData.append("sender", sender);
 
     const response = await api.post(
@@ -89,7 +89,7 @@ export const sendMessages = async ({
     `/zbot/conversations/${conversationId}/textMessages/`,
     {
       text: text.trim(),
-      machine,
+      machine_id: machine,
       sender,
     },
   );

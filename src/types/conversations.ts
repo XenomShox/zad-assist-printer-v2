@@ -35,6 +35,7 @@ export interface BaseMesage {
   id: string;
   data: string;
   sender: TSenderEnum;
+  machine_id: string;
   created_at: Date;
   updated_at: Date;
   is_deleted: boolean;

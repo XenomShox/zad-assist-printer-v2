@@ -108,6 +108,7 @@ export const useSendMessage = (
       setAiResponsePending(true);
       const newMessage: TextMessage = {
         id: uuid(),
+        machine_id: machine,
         data: "",
         sender: "ai",
         created_at: new Date(),

@@ -45,28 +45,9 @@ type TChatProviderProps = {
   redirectTo: string;
   size?: TChatSize;
 
-  children: React.ReactNode;
+  children?: React.ReactNode;
   type: TConversationType;
 };
-
-// const groupMessages = (messages: TMessage[]): TMessage[][] => {
-//   if (messages.length === 0) return [];
-
-//   const result: TMessage[][] = [];
-//   let currentBlock: TMessage[] = [messages[0]];
-
-//   for (let i = 1; i < messages.length; i++) {
-//     if (messages[i].sender === messages[i - 1].sender) {
-//       currentBlock.push(messages[i]);
-//     } else {
-//       result.push(currentBlock);
-//       currentBlock = [messages[i]];
-//     }
-//   }
-
-//   result.push(currentBlock);
-//   return result;
-// };
 
 // Provider component
 export const ChatProvider = ({
@@ -76,17 +57,9 @@ export const ChatProvider = ({
   children,
   type,
 }: TChatProviderProps) => {
-  //   const navigate = useNavigate();
-
   const conversation = useConversation(conversationId);
 
   const messages = useMessages(conversationId);
-
-  //   const message_blocks = groupMessages(
-  //     messages.data?.pages.flatMap((page) => page.results) ?? [],
-  //   );
-
-  //   console.log(conversation.data, message_blocks);
 
   useEffect(() => {
     if (conversation.isError)

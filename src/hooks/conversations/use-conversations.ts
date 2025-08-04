@@ -115,6 +115,7 @@ export const useDeleteConversation = (
   type: TConversationType,
   search: string,
 ) => {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -140,6 +141,7 @@ export const useDeleteConversation = (
       toast.success("Title edited", {
         description: "Title has succesfuly been edited",
       });
+      navigate("/d/c");
     },
     onError: () => {
       toast.error("Uh Oh!", {
