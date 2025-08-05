@@ -11,9 +11,9 @@ const DashboardLayout = lazy(
 const DashboardPage = lazy(() => import("@/pages/dashboard"));
 const ChatPage = lazy(() => import("@/pages/dashboard/chat"));
 // const OPSPage = lazy(() => import("@/pages/dashboard/ops"));
-// const SimilaritySearchPage = lazy(
-//   () => import("@/pages/dashboard/similarity-search"),
-// );
+const SimilaritySearchPage = lazy(
+  () => import("@/pages/dashboard/similarity-search"),
+);
 
 function App() {
   return (
@@ -39,15 +39,15 @@ function App() {
         >
           <Route index element={<DashboardPage />} />
           <Route path=":conversationId" element={<OPSPage />} />
-        </Route>
+        </Route> */}
         <Route
           path="ss"
           element={
             <DashboardLayout redirectPath="/d/ss" conversationType="base" />
           }
         >
-          <Route index element={<DashboardPage />} />
-        </Route> */}
+          <Route index element={<SimilaritySearchPage />} />
+        </Route>
       </Route>
 
       {/* <Route path="*" element={<NotFound />} /> */}

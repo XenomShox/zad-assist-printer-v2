@@ -109,18 +109,18 @@ interface receiveChatSystemStreamProps {
   conversationId: string;
   textQuery: { id: string; text: string };
   imageQuery?: { id: string; image_url: string };
-  machineType: string;
+  machine_id: string;
 }
 
 export const receiveChatSystemStream = async ({
   conversationId,
   textQuery,
   imageQuery,
-  machineType,
+  machine_id,
 }: receiveChatSystemStreamProps) => {
   const body = {
     textQuery,
-    machineType,
+    machine_id,
     appVersion: APP_VERSION,
     imageQuery,
   };

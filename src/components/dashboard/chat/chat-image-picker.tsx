@@ -31,44 +31,44 @@ const ImagePicker = ({
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      const filename = file.name.toLowerCase();
-      if (allowed_img_types.some((type) => filename.endsWith(type))) {
-        const options = {
-          maxSizeMB: 3,
-          maxWidthOrHeight: 2160,
-          useWebWorker: true,
-        };
+    if (!e.target.files || !e.target.files[0]) return;
 
-        try {
-          const compressedBlob = await imageCompression(file, options);
+    const file = e.target.files[0];
+    const filename = file.name.toLowerCase();
+    if (allowed_img_types.some((type) => filename.endsWith(type))) {
+      const options = {
+        maxSizeMB: 3,
+        maxWidthOrHeight: 2160,
+        useWebWorker: true,
+      };
 
-          // Convert Blob to File (fixes FormData issue)
-          const compressedFile = new File([compressedBlob], file.name, {
-            type: file.type, // Keep original file type
-            lastModified: Date.now(),
-          });
+      try {
+        const compressedBlob = await imageCompression(file, options);
 
-          //   ReactGA.event({
-          //     category: "conversation",
-          //     action: "image selection",
-          //     label: "user selected an image",
-          //   });
-
-          setImage(compressedFile);
-          setPreviewUrl(URL.createObjectURL(compressedFile));
-        } catch (error) {
-          console.log(error);
-        }
-
-        // Reset input value to allow re-selecting the same file
-        e.target.value = "";
-      } else {
-        toast.error("Uh oh! something went wrong.", {
-          description: "Can only select .jpeg and .jpg images",
+        // Convert Blob to File (fixes FormData issue)
+        const compressedFile = new File([compressedBlob], file.name, {
+          type: file.type, // Keep original file type
+          lastModified: Date.now(),
         });
+
+        //   ReactGA.event({
+        //     category: "conversation",
+        //     action: "image selection",
+        //     label: "user selected an image",
+        //   });
+
+        setImage(compressedFile);
+        setPreviewUrl(URL.createObjectURL(compressedFile));
+      } catch (error) {
+        console.log(error);
       }
+
+      // Reset input value to allow re-selecting the same file
+      e.target.value = "";
+    } else {
+      toast.error("Uh oh! something went wrong.", {
+        description: "Can only select .jpeg and .jpg images",
+      });
     }
   };
 

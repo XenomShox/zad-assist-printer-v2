@@ -1,7 +1,9 @@
 import {
   MessageCircleMore,
   Plus,
-  Search /* SlidersVertical */,
+  Search,
+  // SlidersVertical,
+  Videotape,
 } from "lucide-react";
 import { useCallback, useState } from "react";
 import { Link } from "react-router";
@@ -59,7 +61,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   });
 
   return (
-    <Sidebar {...props}>
+    <Sidebar
+      {...props}
+      className="group-data-[collapsible=icon]:dark:bg-sidebar group-data-[collapsible=icon]:bg-white"
+    >
       <SidebarHeader>
         <SidebarMenuButton
           className="cursor-pointer"
@@ -86,16 +91,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SlidersVertical className="text-black/0 transition-all group-hover/link:text-black/100 group-data-[collapsible=icon]:text-black dark:text-white/0 group-hover/link:dark:text-white group-data-[collapsible=icon]:dark:text-white" />
             <span>Optimal parameter setting</span>
           </Link>
-        </SidebarMenuButton>
+        </SidebarMenuButton> */}
         <SidebarMenuButton
           asChild
           className="group/link flex-row-reverse justify-between"
         >
           <Link to="/d/ss">
-            <SlidersVertical className="text-black/0 transition-all group-hover/link:text-black/100 group-data-[collapsible=icon]:text-black dark:text-white/0 group-hover/link:dark:text-white group-data-[collapsible=icon]:dark:text-white" />
+            <Videotape className="text-black/0 transition-all group-hover/link:text-black/100 group-data-[collapsible=icon]:text-black dark:text-white/0 group-hover/link:dark:text-white group-data-[collapsible=icon]:dark:text-white" />
             <span>Similarity search</span>
           </Link>
-        </SidebarMenuButton> */}
+        </SidebarMenuButton>
 
         {/* <SearchForm className="group-data-[collapsible=icon]:hidden" /> */}
         <SidebarGroup className="py-0 group-data-[collapsible=icon]:hidden">

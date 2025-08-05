@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router";
 
-import { ChatProvider } from "@/context/chat-context";
+import SimilaritySearchBody from "@/components/dashboard/similarity-search";
 
 const SimilaritySearchPage = () => {
   const navigate = useNavigate();
@@ -9,14 +9,8 @@ const SimilaritySearchPage = () => {
   if (!conversationId) navigate("/d/ss");
 
   return (
-    <section className="flex h-[calc(100vh-4rem)] flex-1 flex-col justify-center gap-4 overflow-y-hidden">
-      <ChatProvider
-        conversationId={conversationId!}
-        redirectTo="/d/ss"
-        type="base"
-      >
-        Similarity search page
-      </ChatProvider>
+    <section className="flex h-[calc(100vh-4rem)] flex-1 flex-col justify-center gap-4 overflow-y-hidden p-4">
+      <SimilaritySearchBody />
     </section>
   );
 };

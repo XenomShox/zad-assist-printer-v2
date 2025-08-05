@@ -163,7 +163,7 @@ export const useSendMessage = (
           imageQuery: new_image_message
             ? { id: new_image_message.id, image_url: new_image_message.data }
             : undefined,
-          machineType: machine,
+          machine_id: machine,
         });
     },
   });
