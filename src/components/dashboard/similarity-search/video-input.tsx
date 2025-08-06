@@ -96,7 +96,7 @@ const VideoInput = () => {
           lastFrameTime = now;
         }
       }
-    }, 500); // check every half second (or adjust)
+    }, 100); // check every half second (or adjust)
 
     return () => clearInterval(interval);
   }, [isExtracting, captureAndSendFrame]);
